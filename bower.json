@@ -1,0 +1,20 @@
+{
+  "name": "Forcast App",
+  "version": "0.0.0",
+  "authors": [
+    "Zain Syed <zeddotes@gmail.com>"
+  ],
+  "description": "Programming Development Exercise for Architech",
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.0"
+  }
+}

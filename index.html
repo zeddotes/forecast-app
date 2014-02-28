@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>Forecast App</title>
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<!-- app css -->
+	<link rel="stylesheet" href="css/main.css">
+</head>
+<body ng-app="forecastApp" ng-controller="MainCtrl as main" ng-csp class="ng-cloak">
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<!--div class="alert alert-error" ng-show="{ err != "" }"><p>{{ err }}</p></div-->
+			<label>City 
+				<input type="text" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
+			</label>
+		</div>
+	</div>
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="bower_components/angular/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-sanitize.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-route.js"></script>
+	<!-- main app file -->
+	<script src="js/main.js"></script>
+</body>
+</html>
