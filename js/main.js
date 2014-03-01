@@ -1,55 +1,70 @@
 // define angular app
-var app = angular.module( 'forecastApp', ['ngRoute', 'ngSanitize'] ).config(function($sceProvider) {
-	$sceProvider.enabled(false);
-});
-
-app.factory('forecastData', function($http, $q) {
-	return {
-		getCities: function(){
-			// creating a deferred object for promise
-			var deferred = $q.defer();
-
-			// call forecast api for data
-			$http({
-				method: 'jsonp',
-				url: 'http://api.openweathermap.org/data/2.1/forecast/city?q=Moscow'
-			}).success(function(data){
-				//console.log(data);
-				data = data.substring(1);
-				data = data.substring(0, (data.length-1));
-				deferred.resolve($.parseJSON(data));
-			}).error(function(){
-				// failure
-				deferred.reject("An error occured while fetching items");
-			});
-
-			// return promise
-			return deferred.promise;
-		}
-  	}
+var app = angular.module( 'forecastApp', ['ngRoute', 'ngSanitize', 'ui.bootstrap'] ).config(function($sceProvider) {
 });
 
 // Main controller
-app.controller( 'MainCtrl', function( $scope, $parse, $compile, $interpolate, $sce, forecastData ) {
-	
+app.controller( 'MainCtrl', function( $scope, $parse, $compile, $interpolate, $sce, $http ) {
+	$scope.weatherInfo = {};
+	$scope.cityDetails = {};
+
+	// today
+	var d = new Date();
+	$scope.today = d.getDay();
+
+
 	// define cities obj
-	$scope.cities = {};
-
-	// define init function to run when angular's ready
-	$scope.init = function() {
-
-		forecastData.getCities().then(function(data){
-			$scope.cities = data;
-		}, function(error){
-			$scope.err = error;
+	$scope.getLocation = function(val) {
+		$scope.selected = undefined;
+		$scope.weatherInfo = {};
+		$scope.cityDetails = {};
+		return $http.jsonp("http://gd.geobytes.com/AutoCompleteCity", {
+			params: {
+				"q": val,
+				"callback": "JSON_CALLBACK"
+			}
+		}).then(function(res){
+			var addresses = res.data;
+			return addresses;
 		});
-
 	};
 
-	// start up
-	$scope.init();
+	$scope.weekday = function(ep) {
+		var n = new Date(ep * 1000);
+		n = n.toUTCString().substring(0,3);
+		if (n != "Inv") {
+			return n;
+		}
+	};
+
+	$scope.$watch('selected', function(newVal, oldVal){
+		if (newVal !== '' && newVal !== undefined) {
+			return $http.jsonp("http://gd.geobytes.com/GetCityDetails", {
+				params: {
+					"fqcn": newVal,
+					"callback": "JSON_CALLBACK"
+				}
+			}).then(function(res){
+				$scope.cityDetails = res.data;
+				$http.jsonp('http://api.openweathermap.org/data/2.5/forecast/daily', {
+					params: {
+						//"q": newVal.replace(/^[,\s]+|[,\s]+$/g, ''),
+						"lat": $scope.cityDetails.geobyteslatitude,
+						"lon": $scope.cityDetails.geobyteslongitude,
+						"units": "metric",
+						"mode": "json",
+						"cnt": 7,
+						"callback": "JSON_CALLBACK"
+					}
+			    }).then(function(res){
+			    	$scope.weatherInfo = res.data.list;
+			    	//var tomove = $scope.weatherInfo.splice($scope.today, $scope.weatherInfo.length);
+			    	console.log($scope.weatherInfo);
+			    });
+			});
+		} else if (newVal == '' || newVal == undefined) {
+
+		}
+	});
 
 });
 
-$(function(){
-});

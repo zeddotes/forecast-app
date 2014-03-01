@@ -10,19 +10,240 @@
 	<link rel="stylesheet" href="css/main.css">
 </head>
 <body ng-app="forecastApp" ng-controller="MainCtrl as main" ng-csp class="ng-cloak">
-	<div class="container-fluid">
-		<div class="row-fluid">
-			<!--div class="alert alert-error" ng-show="{ err != "" }"><p>{{ err }}</p></div-->
-			<label>City 
-				<input type="text" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
-			</label>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<h2>Forcast App for Architech</h2>
+				<br><br>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label for="citySearch" class="col-sm-2 control-label"><i ng-show="loadingCities" id="loading-ind" class="glyphicon glyphicon-refresh"></i>City</label>
+						<div class="col-sm-10">
+							<input type="text" name="citySearch" ng-model="selected" placeholder="" typeahead="address for address in getLocation($viewValue) | filter:$viewValue" typeahead-loading="loadingCities" class="ng-pristine ng-valid form-control" typeahead-editable="false" typeahead-min-length="3">
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="row" ng-show="selected !== '' && selected !== undefined">
+			<!--div class="row">
+				<div class="col-md-12">
+					selected: {{ selected }}
+				</div>
+			</div>
+			<div class="row" ng-if=" cityDetails != {} ">
+				<div class="col-md-12">
+					{{ cityDetails }}
+				</div>
+			</div-->
+			<div class="row" ng-if=" weatherInfo != {} ">
+				<div class="row">
+					<div class="col-md-12">
+						<table class="table table-condensed">
+							<tbody>
+								<tr>
+									<td colspan="2" class="text-center">
+										<h2>Today</h2>
+										<img ng-if="weatherInfo[0].weather[0].icon" ng-src="http://openweathermap.org/img/w/{{ weatherInfo[0].weather[0].icon }}.png" /><br />
+										<h4>{{ weatherInfo[0].weather[0].description }}</h4>
+									</td>
+								</tr>
+								<tr>
+									<th>Morning</th><td>{{ weatherInfo[0].temp.morn }}</td>
+								</tr>
+								<tr>
+									<th>Day</th><td>{{ weatherInfo[0].temp.day }}</td>
+								</tr>
+								<tr>
+									<th>Evening</th><td>{{ weatherInfo[0].temp.eve }}</td>
+								</tr>
+								<tr>
+									<th>Night</th><td>{{ weatherInfo[0].temp.night }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<table class="table table-condensed">
+							<tbody>
+								<tr>
+									<td colspan="2" class="text-center">
+										<h2>{{ weekday(weatherInfo[1].dt) }}</h2>
+										<img ng-if="weatherInfo[1].weather[0].icon" ng-src="http://openweathermap.org/img/w/{{ weatherInfo[1].weather[0].icon }}.png" /><br />
+										<h4>{{ weatherInfo[1].weather[0].description }}</h4>
+									</td>
+								</tr>
+								<tr>
+									<th>Morning</th><td>{{ weatherInfo[1].temp.morn }}</td>
+								</tr>
+								<tr>
+									<th>Day</th><td>{{ weatherInfo[1].temp.day }}</td>
+								</tr>
+								<tr>
+									<th>Evening</th><td>{{ weatherInfo[1].temp.eve }}</td>
+								</tr>
+								<tr>
+									<th>Night</th><td>{{ weatherInfo[1].temp.night }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-md-4">
+						<table class="table table-condensed">
+							<tbody>
+								<tr>
+									<td colspan="2" class="text-center">
+										<h2>{{ weekday(weatherInfo[2].dt) }}</h2>
+										<img ng-if="weatherInfo[2].weather[0].icon" ng-src="http://openweathermap.org/img/w/{{ weatherInfo[2].weather[0].icon }}.png" /><br />
+										<h4>{{ weatherInfo[2].weather[0].description }}</h4>
+									</td>
+								</tr>
+								<tr>
+									<th>Morning</th><td>{{ weatherInfo[2].temp.morn }}</td>
+								</tr>
+								<tr>
+									<th>Day</th><td>{{ weatherInfo[2].temp.day }}</td>
+								</tr>
+								<tr>
+									<th>Evening</th><td>{{ weatherInfo[2].temp.eve }}</td>
+								</tr>
+								<tr>
+									<th>Night</th><td>{{ weatherInfo[2].temp.night }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-md-4">
+						<table class="table table-condensed">
+							<tbody>
+								<tr>
+									<td colspan="2" class="text-center">
+										<h2>{{ weekday(weatherInfo[3].dt) }}</h2>
+										<img ng-if="weatherInfo[3].weather[0].icon" ng-src="http://openweathermap.org/img/w/{{ weatherInfo[3].weather[0].icon }}.png" /><br />
+										<h4>{{ weatherInfo[3].weather[0].description }}</h4>
+									</td>
+								</tr>
+								<tr>
+									<th>Morning</th><td>{{ weatherInfo[3].temp.morn }}</td>
+								</tr>
+								<tr>
+									<th>Day</th><td>{{ weatherInfo[3].temp.day }}</td>
+								</tr>
+								<tr>
+									<th>Evening</th><td>{{ weatherInfo[3].temp.eve }}</td>
+								</tr>
+								<tr>
+									<th>Night</th><td>{{ weatherInfo[3].temp.night }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<table class="table table-condensed">
+							<tbody>
+								<tr>
+									<td colspan="2" class="text-center">
+										<h2>{{ weekday(weatherInfo[4].dt) }}</h2>
+										<img ng-if="weatherInfo[4].weather[0].icon" ng-src="http://openweathermap.org/img/w/{{ weatherInfo[4].weather[0].icon }}.png" /><br />
+										<h4>{{ weatherInfo[4].weather[0].description }}</h4>
+									</td>
+								</tr>
+								<tr>
+									<th>Morning</th><td>{{ weatherInfo[4].temp.morn }}</td>
+								</tr>
+								<tr>
+									<th>Day</th><td>{{ weatherInfo[4].temp.day }}</td>
+								</tr>
+								<tr>
+									<th>Evening</th><td>{{ weatherInfo[4].temp.eve }}</td>
+								</tr>
+								<tr>
+									<th>Night</th><td>{{ weatherInfo[4].temp.night }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-md-4">
+						<table class="table table-condensed">
+							<tbody>
+								<tr>
+									<td colspan="2" class="text-center">
+										<h2>{{ weekday(weatherInfo[5].dt) }}</h2>
+										<img ng-if="weatherInfo[5].weather[0].icon" ng-src="http://openweathermap.org/img/w/{{ weatherInfo[5].weather[0].icon }}.png" /><br />
+										<h4>{{ weatherInfo[5].weather[0].description }}</h4>
+									</td>
+								</tr>
+								<tr>
+									<th>Morning</th><td>{{ weatherInfo[5].temp.morn }}</td>
+								</tr>
+								<tr>
+									<th>Day</th><td>{{ weatherInfo[5].temp.day }}</td>
+								</tr>
+								<tr>
+									<th>Evening</th><td>{{ weatherInfo[5].temp.eve }}</td>
+								</tr>
+								<tr>
+									<th>Night</th><td>{{ weatherInfo[5].temp.night }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-md-4">
+						<table class="table table-condensed">
+							<tbody>
+								<tr>
+									<td colspan="2" class="text-center">
+										<h2>{{ weekday(weatherInfo[6].dt) }}</h2>
+										<img ng-if="weatherInfo[6].weather[0].icon" ng-src="http://openweathermap.org/img/w/{{ weatherInfo[6].weather[0].icon }}.png" /><br />
+										<h4>{{ weatherInfo[6].weather[0].description }}</h4>
+									</td>
+								</tr>
+								<tr>
+									<th>Morning</th><td>{{ weatherInfo[6].temp.morn }}</td>
+								</tr>
+								<tr>
+									<th>Day</th><td>{{ weatherInfo[6].temp.day }}</td>
+								</tr>
+								<tr>
+									<th>Evening</th><td>{{ weatherInfo[6].temp.eve }}</td>
+								</tr>
+								<tr>
+									<th>Night</th><td>{{ weatherInfo[6].temp.night }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row" ng-show="selected == '' || selected == undefined">
+			<div class="col-md-12 text-center">
+				<br>
+				<h3>No city selected.</h3>				
+			</div>
 		</div>
 	</div>
+	<div id="footer">
+		<div class="container">
+			<div class="col-md-12">
+				© <a href="https://twitter.com/zeddotes">Zain Syed</a>
+			</div>
+      	</div>
+    </div>
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="bower_components/angular/angular.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-sanitize.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-route.js"></script>
+	<script src="bower_components/ui-bootstrap-tpls-0.10.0.min.js"></script>
 	<!-- main app file -->
 	<script src="js/main.js"></script>
 </body>
